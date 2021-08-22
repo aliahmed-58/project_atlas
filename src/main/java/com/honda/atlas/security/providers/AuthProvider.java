@@ -30,11 +30,7 @@ public class AuthProvider implements AuthenticationProvider {
 
         UserDetails user = userDetailsManager.loadUserByUsername(username);
 
-//        if (passwordEncoder.matches(password, user.getPassword())) {
-//            return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
-//        }
-
-        if (password.equals(user.getPassword())) {
+        if (passwordEncoder.matches(password, user.getPassword())) {
             return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
         }
 
