@@ -12,6 +12,7 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -35,25 +36,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
-//                .authorizeRequests()
-//                .antMatchers("/css/**","/img/**", "/signup", "/logout").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .formLogin()
-//                .loginProcessingUrl("/userAuth")
-//                .loginPage("/login")
-//                .failureUrl("/login-error")
-//                .defaultSuccessUrl("/home")
-//                .permitAll()
-//                .and()
-//                .logout()
-//                .logoutUrl("/logout")
-//                .logoutSuccessUrl("/login")
-//                .deleteCookies("JSESSIONID")
-//                .invalidateHttpSession(true)
-//                .and()
-//                .csrf   ().disable();
+
+        http
+                .authorizeRequests()
+                .antMatchers("/css/**","/img/**", "/login", "/logout").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginProcessingUrl("/login")
+                .loginPage("/login")
+                .failureUrl("/login-error")
+                .defaultSuccessUrl("/")
+                .permitAll()
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .and()
+                .csrf().disable()
+                .httpBasic().disable();
+
 
     }
 }
