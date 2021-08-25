@@ -1,15 +1,20 @@
 package com.honda.atlas.config;
 
+import com.honda.atlas.repo.UsersRepo;
+import com.honda.atlas.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.proxy.NoOp;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import javax.sql.DataSource;
@@ -18,16 +23,16 @@ import java.util.ArrayList;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final DataSource dataSource;
+    private final UsersRepo usersRepo;
 
     @Autowired
-    public SecurityConfig(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public SecurityConfig(UsersRepo usersRepo) {
+        this.usersRepo = usersRepo;
     }
 
     @Bean
-    public JdbcUserDetailsManager userDetailsManager() {
-        return new JdbcUserDetailsManager(this.dataSource);
+    public UserDetailsService userDetailsManager() {
+        return new UserDetailsServiceImpl(usersRepo);
     }
 
     @Bean
@@ -41,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/css/**","/img/**", "/login", "/signup", "/logout").permitAll()
+                .antMatchers("/").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -58,7 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .httpBasic().disable();
-
 
     }
 }

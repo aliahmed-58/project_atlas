@@ -1,5 +1,6 @@
 package com.honda.atlas.security.providers;
 
+import com.honda.atlas.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,12 +16,12 @@ import org.springframework.stereotype.Component;
 public class AuthProvider implements AuthenticationProvider {
 
     private final PasswordEncoder passwordEncoder;
-    private final JdbcUserDetailsManager userDetailsManager;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public AuthProvider(PasswordEncoder passwordEncoder, JdbcUserDetailsManager userDetailsManager) {
+    public AuthProvider(PasswordEncoder passwordEncoder, UserDetailsServiceImpl userDetailsService) {
         this.passwordEncoder = passwordEncoder;
-        this.userDetailsManager = userDetailsManager;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -28,7 +29,7 @@ public class AuthProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = (String) authentication.getCredentials();
 
-        UserDetails user = userDetailsManager.loadUserByUsername(username);
+        UserDetails user = userDetailsService.loadUserByUsername(username);
 
         if (passwordEncoder.matches(password, user.getPassword())) {
             return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
