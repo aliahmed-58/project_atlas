@@ -34,6 +34,10 @@ public class AuthProvider implements AuthenticationProvider {
             return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
         }
 
+//        if (user.getPassword().matches(password)) {
+//            return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
+//        }
+
         else {
             throw new BadCredentialsException("Invalid username or password");
         }

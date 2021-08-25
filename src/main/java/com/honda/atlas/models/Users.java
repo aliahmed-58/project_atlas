@@ -1,5 +1,6 @@
 package com.honda.atlas.models;
 
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,10 +13,12 @@ import java.util.List;
 public class Users implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = true)
     private String name;
+
     private String username;
     private String password;
     private boolean enabled;

@@ -1,6 +1,7 @@
 package com.honda.atlas.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.proxy.NoOp;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers("/css/**","/img/**", "/login", "/logout").permitAll()
+                .antMatchers("/css/**","/img/**", "/login", "/signup", "/logout").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
