@@ -1,8 +1,9 @@
-package com.honda.atlas.controllers;
+package com.honda.atlas.controllers.auth;
 
 import com.honda.atlas.models.Users;
-import com.honda.atlas.service.AuthService;
+import com.honda.atlas.service.auth.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
@@ -15,18 +16,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
-public class Authentication {
+public class LoginController {
 
-    private final AuthService authService;
+    private final LoginService loginService;
 
     @Autowired
-    public Authentication(AuthService authService) {
-        this.authService = authService;
+    public LoginController(LoginService loginService) {
+        this.loginService = loginService;
     }
 
     @GetMapping("/login")
-    public ModelAndView showLogin() {
-        return authService.showLoginForm();
+    public ModelAndView showLogin(Authentication auth) {
+        return loginService.showLoginForm(auth);
     }
 
     @PostMapping("/login")
@@ -37,22 +38,7 @@ public class Authentication {
     @GetMapping("/login-error")
     public ModelAndView loginError(HttpServletRequest req, org.springframework.security.core.Authentication auth) {
 
-        if (auth != null) {
-            return  new ModelAndView("redirect:/home");
-        }
-
-        HttpSession session = req.getSession();
-        String errorMessage = null;
-        if (session != null) {
-            AuthenticationException ex = (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-
-            if (ex != null) {
-                errorMessage = ex.getMessage();
-            }
-        }
-        ModelAndView mv = new ModelAndView("login");
-        mv.addObject("error", errorMessage);
-        return mv;
+        return loginService.loginError(req, auth);
 
     }
 
